@@ -29,8 +29,8 @@ app.get("/api", async (req, res) => {
     let page = await browser.newPage();
     await page.goto(`https://alephzero.subscan.io/transfer?startDate=&endDate=&startBlock=&endBlock=&timeType=date&direction=all&result=success&minAmount=${minAmount}&maxAmount=&currency=usd`);
 
-    // Wait for 10 seconds
-    await page.waitForTimeout(5000);
+    // // Wait for 10 seconds
+    // await page.waitForTimeout(10000);
 
     // Wait for the table to fully load.
     await page.waitForSelector('.el-table__body');
