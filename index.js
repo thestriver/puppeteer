@@ -27,8 +27,24 @@ app.get("/api", async (req, res) => {
     let browser = await puppeteer.launch(options);
 
     let page = await browser.newPage();
-    await page.goto("https://www.google.com");
-    res.send(await page.title());
+    await page.goto(`https://alephzero.subscan.io/transfer?startDate=&endDate=&startBlock=&endBlock=&timeType=date&direction=all&result=success&minAmount=${minAmount}&maxAmount=&currency=usd`);
+
+    // Wait for 10 seconds
+    await page.waitForTimeout(10000);
+
+    // Wait for the table to fully load.
+    await page.waitForSelector('.el-table__body');
+
+    const data = await page.$$eval('table.el-table__body tr', rows => {
+        return Array.from(rows, row => {
+            const columns = row.querySelectorAll('td div.cell');
+            return Array.from(columns, column => column.textContent.trim())
+                .filter(columnText => columnText !== ""); // remove empty columns
+        });
+    });
+
+    console.log("Number of rows: ", data.length);
+    res.send(await data.length);
   } catch (err) {
     console.error(err);
     return null;
